@@ -5,17 +5,18 @@ ARG DEBUG
 
 RUN \
   quiet=$([ "${DEBUG}" = "yes" ] || echo "--quiet") && \
+  almalinux_version=$(cut -d: -f5 /etc/system-release-cpe | cut -d. -f1) && \
   dnf update -y ${quiet} && \
   { \
     echo "[mariadb]"; \
     echo "name = MariaDB"; \
-    echo "baseurl = https://yum.mariadb.org/11.8/rhel/8/x86_64/"; \
+    echo "baseurl = https://yum.mariadb.org/11.8/rhel/${almalinux_version}/x86_64/"; \
     echo "gpgkey = https://yum.mariadb.org/RPM-GPG-KEY-MariaDB"; \
     echo "gpgcheck = 1"; \
   } | tee /etc/yum.repos.d/MariaDB.repo && \
   dnf install -y \
-    https://packages.apache.org/artifactory/arrow/almalinux/8/apache-arrow-release-latest.rpm \
-    https://packages.groonga.org/almalinux/8/groonga-release-latest.noarch.rpm && \
+    https://packages.apache.org/artifactory/arrow/almalinux/${almalinux_version}/apache-arrow-release-latest.rpm \
+    https://packages.groonga.org/almalinux/${almalinux_version}/groonga-release-latest.noarch.rpm && \
   dnf groupinstall -y ${quiet} "Development Tools" && \
   dnf install --enablerepo=powertools -y ${quiet} \
     'dnf-command(builddep)' \

@@ -1,4 +1,4 @@
-ARG FROM=almalinux:9
+ARG FROM=almalinux:10
 FROM ${FROM}
 
 ARG DEBUG
